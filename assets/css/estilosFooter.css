@@ -1,0 +1,263 @@
+.footer {
+    background: linear-gradient(135deg, #003731 0%, #005E56 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #fdc830, #f37335, #00d2ff, #3a7bd5);
+    background-size: 300% 300%;
+    animation: rainbow-border 4s ease infinite;
+}
+
+@keyframes rainbow-border {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.copyright-text {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 2;
+}
+
+.powered-by {
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.guapacha-container {
+    position: relative;
+    display: inline-block;
+}
+
+.guapacha-badge {
+    position: relative;
+    z-index: 3;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ffb347;
+    animation: text-glow 2s ease-in-out infinite alternate;
+    text-shadow: 0 0 5px #ffb347, 0 0 10px #e52e71;
+}
+
+@keyframes text-glow {
+    from { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5), 0 0 10px rgba(255, 69, 0, 0.5); }
+    to { text-shadow: 0 0 10px gold, 0 0 20px orange, 0 0 30px orangered; }
+}
+
+
+.fa-crown, .fa-bolt {
+    color: gold;
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.7));
+    animation: float 3s ease-in-out infinite;
+}
+
+.fa-bolt {
+    animation: bolt-shake 0.3s linear infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes bolt-shake {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(-2px) rotate(-5deg); }
+    75% { transform: translateX(2px) rotate(5deg); }
+}
+
+/* Nuevo efecto de tormenta de rayos */
+.lightning-storm {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.lightning-storm::before,
+.lightning-storm::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 0;
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.9) 30%, 
+        transparent 70%);
+    top: -20px;
+    left: 20%;
+    animation: lightning-drop 3s linear infinite;
+}
+
+.lightning-storm::after {
+    left: 50%;
+    animation-delay: 0.8s;
+}
+
+.lightning-storm span {
+    position: absolute;
+    width: 2px;
+    height: 0;
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.9) 30%, 
+        transparent 70%);
+    top: -20px;
+    left: 80%;
+    animation: lightning-drop 3s linear infinite;
+    animation-delay: 1.6s;
+}
+
+@keyframes lightning-drop {
+    0% { height: 0; top: -20px; opacity: 0; }
+    10% { height: 30px; opacity: 0.8; }
+    20% { height: 60px; opacity: 0.5; }
+    30% { height: 90px; opacity: 0.3; }
+    40% { height: 120px; opacity: 0.1; }
+    50%, 100% { height: 150px; top: 150px; opacity: 0; }
+}
+
+.version {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    font-style: italic;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 78px); 
+}
+
+
+.footer {
+  margin-top: auto; /* empuja el footer al fondo */
+}
+
+
+
+
+/* Estilos mejorados para la barra de progreso */
+.progress-container {
+    width: 100%;
+    margin: 20px auto;
+    position: relative;
+}
+
+.progress {
+    height: 20px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #31ec1f 0%, #e4e7eb 100%);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #d1d8e0;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    box-shadow: 0 2px 8px rgba(79, 172, 254, 0.4);
+    transition: width 0.6s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-striped {
+    background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 2rem 2rem;
+}
+
+.progress-bar-animated {
+    animation: progress-bar-stripes 1.2s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+    0% {
+        background-position-x: 2rem;
+    }
+}
+
+.progress-text {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    transition: all 0.3s ease;
+}
+
+.progress-percentage {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(255, 255, 255);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para el modal de SweetAlert */
+.swal2-popup {
+    border-radius: 16px !important;
+    padding: 2rem !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.swal2-title {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: #2d3748 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Animación de pulso para el texto */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.pulse-text {
+    animation: pulse 1.5s infinite;
+}

@@ -1,0 +1,181 @@
+/* modal-busqueda.css - Estilos modernos para el modal de búsqueda */
+
+/* Fondo del modal con gradiente suave */
+#modalBusqueda .modal-content {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+
+
+#modalBusqueda .modal-title {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Cuerpo del modal */
+#modalBusqueda .modal-body {
+    padding: 2rem;
+}
+
+/* Etiquetas de formulario */
+#modalBusqueda .form-label {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+/* Campos de entrada */
+#modalBusqueda .form-control {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+#modalBusqueda .form-control:focus {
+    border-color: #4a6580;
+    box-shadow: 0 0 0 0.25rem rgba(74, 101, 128, 0.25);
+}
+
+/* Botón de búsqueda */
+#modalBusqueda .btn-success {
+    background: linear-gradient(135deg, #38a169 0%, #48bb78 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+#modalBusqueda .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 161, 105, 0.4);
+}
+
+/* Sección de resultados */
+#resultadoBusqueda {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    border-left: 4px solid #4a6580;
+}
+
+#resultadoBusqueda h6 {
+    color: #2d3748;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+#resultadoBusqueda strong {
+    color: #2c3e50;
+}
+
+/* Lista de cuentas */
+#listaCuentas {
+    margin-top: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+#listaCuentas .list-group-item {
+    border: none;
+    border-bottom: 1px solid #edf2f7;
+    padding: 1rem 1.25rem;
+    transition: all 0.2s ease;
+    background-color: white;
+    cursor: pointer;
+}
+
+#listaCuentas .list-group-item:last-child {
+    border-bottom: none;
+}
+
+#listaCuentas .list-group-item:hover {
+    background-color: #ebf4ff;
+    transform: translateX(5px);
+}
+
+#listaCuentas .list-group-item:active {
+    background-color: #c3dafe;
+}
+
+/* Animaciones para la aparición del modal */
+@keyframes modalEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal.fade .modal-dialog {
+    animation: modalEntrance 0.4s ease-out;
+}
+
+/* Efecto de carga para cuando se está buscando */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid #38a169;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Responsividad para móviles */
+@media (max-width: 576px) {
+    #modalBusqueda .modal-dialog {
+        margin: 1rem;
+    }
+    
+    #modalBusqueda .modal-body {
+        padding: 1.5rem;
+    }
+    
+    #resultadoBusqueda {
+        padding: 1rem;
+    }
+}
+
+/* Estilo para el placeholder del input */
+#inputCedula::placeholder {
+    color: #a0aec0;
+    font-style: italic;
+}
+
+/* Estilo para el select */
+#inputAnio {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234a6580' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12L8 12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 16px;
+    padding-right: 2.5rem;
+}
