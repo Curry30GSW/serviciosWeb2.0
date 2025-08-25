@@ -1,3 +1,85 @@
+//autorizacion
+document.addEventListener('DOMContentLoaded', () => {
+    const usuario = sessionStorage.getItem('cedula');
+    const usuariosAutorizados = ['1007864285', '79638888', '1299299', '16603757'];
+    const token = sessionStorage.getItem('jwt');
+    const paginaActual = window.location.pathname;
+
+    if (!token) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sesión expirada',
+            text: 'Redirigiendo al login...',
+            timer: 3000,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href = '../pages/inicio.html';
+        });
+        return;
+    }
+
+    // 🚫 Bloquear páginas restringidas
+    const paginasRestringidas = ["auditoria.html", "renta-admin.html"];
+
+    if (
+        paginasRestringidas.some(pagina => paginaActual.includes(pagina)) &&
+        (
+            !usuariosAutorizados.includes(usuario) || // si no está autorizado
+            usuario === "16603757" && paginaActual.includes("auditoria.html") // caso especial: bloquea solo auditoria.html
+        )
+    ) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Acceso denegado',
+            text: 'No tienes permisos para ver esta página.',
+            showConfirmButton: false,
+            timer: 2000
+        });
+
+        setTimeout(() => {
+            window.location.href = '/pages/cuenta.html';
+        }, 2000);
+
+        return;
+    }
+
+    // 👁️ Ocultar módulos desde el menú
+    const moduloAuditoria = document.getElementById("moduloAuditoria");
+    const moduloBuscar = document.getElementById("moduloBuscar");
+
+    if (!usuariosAutorizados.includes(usuario)) {
+        // No autorizado → oculta ambos
+        if (moduloAuditoria) moduloAuditoria.style.display = "none";
+        if (moduloBuscar) moduloBuscar.style.display = "none";
+    } else if (usuario === "16603757") {
+        // Caso especial → oculta Auditoría, deja Buscar
+        if (moduloAuditoria) moduloAuditoria.style.display = "none";
+        if (moduloBuscar) moduloBuscar.style.display = "block";
+    }
+
+    Swal.fire({
+        title: 'Cargando información...',
+        text: 'Por favor espera un momento.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    obtenerCuentasPorCedula().then(() => {
+        Swal.close();
+    }).catch((error) => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al cargar los datos.',
+        });
+        console.error(error);
+    });
+});
+
+
+
 
 const style = document.createElement("style");
 style.innerHTML = `
@@ -37,17 +119,61 @@ style.innerHTML = `
     `;
 document.head.appendChild(style);
 
+async function obtenerCuentasPorCedula() {
+    try {
+        const token = sessionStorage.getItem('jwt');
+        const cedula = sessionStorage.getItem('cedula');
+
+        if (!token || !cedula) {
+            console.error("No se encontró el token de autenticación o la cédula");
+            return;
+        }
+
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+
+        const response = await fetch(`http://localhost:5000/api/cuentas/${cedula}`, { headers });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            const cuentasList = document.getElementById("cuentas-list");
+            cuentasList.innerHTML = ''; // limpiar
+
+            if (data.length === 0) {
+                cuentasList.textContent = "No se encontraron cuentas.";
+                return;
+            }
+
+            data.forEach(val => {
+                const span = document.createElement("span");
+                span.className = "badge bg-success px-2 py-2";
+                span.textContent = `${val.cuenta} - ${val.nomina}`;
+                cuentasList.appendChild(span);
+            });
+        } else {
+            console.error('Error al obtener las cuentas:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+    }
+}
+
+
+
+
+obtenerCuentasPorCedula();
+
+
 
 document.getElementById("consultarCer").addEventListener("click", async function () {
-    const cuenta = document.getElementById("slt-cuenta").value;
     const anio = document.getElementById("slt-anio").value;
     const libreria = "colib12";
     const token = sessionStorage.getItem('jwt');
+    const cedula = sessionStorage.getItem("cedula");
 
-    if (!cuenta) {
-        alert("Por favor seleccione una cuenta.");
-        return;
-    }
 
     if (!anio) {
         alert("Por favor seleccione un año.");
@@ -70,9 +196,7 @@ document.getElementById("consultarCer").addEventListener("click", async function
     });
 
     try {
-        const url = `http://localhost:5000/api/certificado-renta?libreria=${libreria}${anio}&cuenta=${cuenta}&inicio=${anio}401&fin=${anio}412&year=20${anio}`;
-
-        console.log("👉 Endpoint final:", url);
+        const url = `http://localhost:5000/api/certificado-renta?libreria=${libreria}${anio}&cedula=${cedula}&inicio=${anio}401&fin=${anio}412&year=20${anio}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -107,7 +231,7 @@ document.getElementById("consultarCer").addEventListener("click", async function
         }
 
         // Verificar si hay certificados
-        if (!data.data.certificado || !Array.isArray(data.data.certificado) || data.data.certificado.length === 0) {
+        if (!Array.isArray(data.data) || data.data.length === 0) {
             console.warn("No se encontraron certificados en la respuesta.");
             Swal.fire({
                 icon: 'warning',
@@ -119,28 +243,57 @@ document.getElementById("consultarCer").addEventListener("click", async function
 
         Swal.close();
 
-        // Obtener el primer certificado
-        const certificado = data.data.certificado[0];
-
-        // Obtener valores con manejo seguro de nulos
-        const creditosCapital = data.data.capital || 0;
-        const interesesVencidos = data.data.intereses || { corriente: 0, mora: 0 };
-        const creditosVivienda = data.data.vivienda && data.data.vivienda.length > 0 ? data.data.vivienda[0] : 0;
-
-        // Manejar créditos otros
-        let creditosOtrosValor = 0;
-        if (data.data.otros && Array.isArray(data.data.otros) && data.data.otros.length > 0) {
-            creditosOtrosValor = data.data.otros[0].OTROS || 0;
+        const cuentasData = data.data;
+        if (!Array.isArray(cuentasData) || cuentasData.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No se encontraron Certificados',
+                text: 'No se encontraron certificados para la consulta realizada.'
+            });
+            return;
         }
 
-        // Manejar revalorización
-        let revalorizacion = 0;
-        if (data.data.reAportes && Array.isArray(data.data.reAportes) && data.data.reAportes.length > 0) {
-            revalorizacion = data.data.reAportes[0].REVALORIZACION || 0;
-        }
+        // --- Unificar valores ---
+        let totalCapital = 0;
+        let totalCorriente = 0;
+        let totalMora = 0;
+        let totalVivienda = 0;
+        let totalOtros = 0;
+        let totalRevalorizacion = 0;
+        let totalFondoSolidario = 0;
 
-        const fondoSolidario = data.data.fondoSolidario || 0;
-        const inactivos = 0; // Valor por defecto según tu código original
+        // 👇 nuevos totales
+        let totalOrdinarios = 0;
+        let totalOcasionales = 0;
+        let totalInactivos = 0;
+
+        const cuentas = [];
+        const nominas = new Set();
+        let certificadoBase = cuentasData[0].socio?.[0] || {};
+
+        cuentasData.forEach(item => {
+            totalCapital += item.capital || 0;
+            totalCorriente += item.intereses?.corriente || 0;
+            totalMora += item.intereses?.mora || 0;
+            totalVivienda += item.vivienda?.[0] || 0;
+            totalOtros += item.otros?.[0]?.OTROS || 0;
+            totalRevalorizacion += item.reAportes?.[0]?.REVALORIZACION || 0;
+            totalFondoSolidario += item.fondoSolidario || 0;
+
+            // 👇 aportes sociales del socio
+            if (item.socio && item.socio[0]) {
+                totalOrdinarios += Number(item.socio[0].ORDINARIOS || 0);
+                totalOcasionales += Number(item.socio[0].OCASIONALES || 0);
+                totalInactivos += Number(item.socio[0].INACTIVOS || 0);
+            }
+
+            cuentas.push(item.cuenta);
+            if (item.socio?.[0]?.NOMINA) {
+                nominas.add(item.socio[0].NOMINA);
+            }
+        });
+
+
 
         // Generar fecha formateada
         const fecha = new Date();
@@ -155,6 +308,10 @@ document.getElementById("consultarCer").addEventListener("click", async function
         const list_mes = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const fechaFormateada = `${dia} días de ${list_mes[mes]} de ${año} ${horasFormato}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')} ${ampm}`;
 
+
+        // Convertir set a texto
+        const listaNominas = Array.from(nominas).join(", ");
+        const listaCuentas = cuentas.join(", ");
         // Obtener referencias a botones
         const botonDescarga = document.getElementById("descargarCer");
         const botonImprimir = document.getElementById("imprime");
@@ -186,10 +343,10 @@ document.getElementById("consultarCer").addEventListener("click", async function
                 <br/>
                 <div class="row">
                     <div class="col-12 contenido">
-                        Que <span class="datos" id="desc"><span class="titulo2">${certificado.NOMBRE}</span></span>
-                        con Número de Identificación <span class="datos" ><span class="titulo2" >${certificado.CEDULA}</span></span>
-                        asociado(a) a la Cooperativa con la Cuenta No. <span class="titulo2" id="ncta">${certificado.CUENTA}<strong></strong></span>
-                        perteneciente a la Nómina de <span class="titulo2" id="nomi">${certificado.NOMINA}</span>
+                        Que <span class="datos" id="desc"><span class="titulo2">${certificadoBase.NOMBRE}</span></span>
+                        con Número de Identificación <span class="datos" ><span class="titulo2" >${certificadoBase.CEDULA}</span></span>
+                        asociado(a) a la Cooperativa con la Cuenta No. <span class="titulo2" id="ncta">${listaCuentas}<strong></strong></span>
+                        perteneciente a la Nómina de <span class="titulo2" id="nomi">${listaNominas}</span>
                         presentaba al 31 de Diciembre del año <span class="titulo2" id="year">20${anio}</span>, los siguientes saldos:
                     </div>
                 </div>
@@ -199,20 +356,20 @@ document.getElementById("consultarCer").addEventListener("click", async function
                 </div>
                 <div class="row">
                     <div class="col-6 titulo2">Ordinarios:</div>
-                    <div class="col-6 datos" id="asal">$ ${Number(certificado.ORDINARIOS || 0).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos" id="asal">$ ${Number(totalOrdinarios).toLocaleString("es-ES")}</div>
                 </div>
                 <div class="row">
                     <div class="col-6 contenido titulo2">Inactivos:</div>
-                    <div class="col-6 datos" id="inac">$ ${Number(inactivos).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos" id="inac">$ ${Number(totalInactivos).toLocaleString("es-ES")}</div>
                 </div>
                 <div class="row">
                     <div class="col-6 contenido titulo2">Ocasionales:</div>
-                    <div class="col-6 datos" id="dsal">$ ${Number(certificado.OCASIONALES || 0).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos" id="dsal">$ ${Number(totalOcasionales).toLocaleString("es-ES")}</div>
                 </div>
                 <br>
                 <div class="row">
                     <div class="col-6 contenido titulo2">CRÉDITOS CAPITAL</div>
-                    <div class="col-6 datos" id="scap">$ ${Number(creditosCapital).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos" id="scap">$ ${Number(totalCapital).toLocaleString("es-ES")}</div>
                 </div>
                 <br>
                 <div class="row">
@@ -220,11 +377,11 @@ document.getElementById("consultarCer").addEventListener("click", async function
                 </div>
                 <div class="row">
                     <div class="col-6 contenido titulo2">Corriente:</div>
-                    <div class="col-6 datos" id="cint">$ ${Number(interesesVencidos.corriente || 0).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos" id="cint">$ ${Number(totalCorriente).toLocaleString("es-ES")}</div>
                 </div>
                 <div class="row">
                     <div class="col-6 titulo2">Mora:</div>
-                    <div class="col-6 datos" id="simo">$ ${Number(interesesVencidos.mora || 0).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos" id="simo">$ ${Number(totalMora).toLocaleString("es-ES")}</div>
                 </div>
                 <br>
                 <div class="row">
@@ -232,11 +389,11 @@ document.getElementById("consultarCer").addEventListener("click", async function
                 </div>
                 <div class="row">
                     <div class="col-6 contenido"><span class="titulo2">Crédito de Vivienda:</span></div>
-                    <div class="col-6 datos" id="crevivi">$ ${Number(creditosVivienda).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos" id="crevivi">$ ${Number(totalVivienda).toLocaleString("es-ES")}</div>
                 </div>
                 <div class="row">  
                     <div class="col-6 contenido"><span class="titulo2">Otros Créditos:</span></div>
-                    <div class="col-6 datos" id="otrosCredi">$ ${Number(creditosOtrosValor).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos" id="otrosCredi">$ ${Number(totalOtros).toLocaleString("es-ES")}</div>
                 </div>
                 <br>
                 <div class="row">
@@ -244,11 +401,11 @@ document.getElementById("consultarCer").addEventListener("click", async function
                 </div>
                 <div class="row">
                     <div class="col-6 contenido"><span class="titulo2">Revalorización de aportes:</span></div>
-                    <div class="col-6 datos" id="revaAport">$ ${Number(revalorizacion).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos" id="revaAport">$ ${Number(totalRevalorizacion).toLocaleString("es-ES")}</div>
                 </div>
                 <div class="row">  
                     <div class="col-6 contenido"><span class="titulo2">Fondo de solidaridad:</span></div>
-                    <div class="col-6 datos" id="fondoSoli">$ ${Number(fondoSolidario).toLocaleString("es-ES")}</div>
+                    <div class="col-6 datos">$ ${Number(totalFondoSolidario).toLocaleString("es-ES")}</div>
                 </div>
                 <br>
                 <div class="row">

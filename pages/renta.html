@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="../assets/img/fonditoelegant.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/f5.png">
+    <link rel="icon" type="image/png" href="../assets/img/f5.png">
     <title>
         COOPSERP | Certificado Renta
     </title>
@@ -135,24 +135,23 @@
                         <!-- Card Body -->
                         <div class="card-body px-2">
                             <form>
-                                <label>Seleccione la cuenta</label>
-                                <select id="slt-cuenta" class="form-control" required>
+                                <label class="mt-2">Cuentas seleccionadas</label>
+                                <div id="cuentas-list" class="form-control d-flex flex-wrap gap-2 p-2"
+                                    style="height:auto; min-height:45px;"></div>
 
-                                </select>
-
-                                <label class="mt-2">Servicio a consultar </label>
+                                <label class="mt-2">Servicio a consultar</label>
                                 <input type="text" id="slt-certi" class="form-control" placeholder="Certificado Renta"
                                     required disabled>
 
-                                <label for="mt-2">Seleccione el año</label>
+                                <label class="mt-2">Seleccione el año</label>
                                 <select id="slt-anio" class="form-control" required>
                                     <option value="24">2024</option>
                                     <option value="23">2023</option>
                                     <option value="22">2022</option>
                                     <option value="21">2021</option>
                                     <option value="20">2020</option>
-
                                 </select>
+
                                 <div class="pt-4">
                                     <button type="button" id="consultarCer"
                                         class="btn btn-success pull-right">Consultar</button>
@@ -162,6 +161,8 @@
                                         disabled>Descargar</button>
                                 </div>
                             </form>
+
+
                         </div>
                     </div>
                 </div>
@@ -241,7 +242,6 @@
     <script src="../js/hora.js"></script>
     <script src="../js/verifyToken.js"></script>
     <script src="../js/sessionStorage.js"></script>
-    <script src="../js/obtenerCuentas.js"></script>
     <script src="../js/imprimirCertificado.js"></script>
     <script src="../js/certificadoRenta.js"></script>
     <script src="../js/cargos.js"></script>

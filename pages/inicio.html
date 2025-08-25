@@ -35,6 +35,8 @@
   <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 </head>
 
 <body class="">
@@ -87,8 +89,9 @@
 
 
                     <div class="text-center">
-                      <button type="button" class="btn btn-lg bg-gradient-dark btn-lg w-100 mt-4 mb-0"
-                        id="btnLogin">Ingresar</button>
+                      <button type="submit" class="btn btn-lg bg-gradient-dark btn-lg w-100 mt-4 mb-0" id="btnLogin">
+                        Ingresar
+                      </button>
                     </div>
                   </form>
                 </div>
@@ -127,29 +130,28 @@
               <input type="text" class="form-control border border-secondary-subtle rounded-3 bg-white shadow-sm"
                 id="cedulaR" name="cedulaR" required>
             </div>
+
             <div class="mb-3">
               <label for="fechaNacimiento" class="form-label fw-semibold">Fecha de Nacimiento</label>
               <input type="date" class="form-control border border-secondary-subtle rounded-3 bg-white shadow-sm"
                 id="fechaNacimiento" name="fechaNacimiento" required>
             </div>
+
             <div class="mb-3">
               <label for="correo" class="form-label fw-semibold">Correo Electrónico</label>
               <input type="email" class="form-control border border-secondary-subtle rounded-3 bg-white shadow-sm"
                 id="correo" name="correo" required>
             </div>
+
+            <!-- Contraseña con toggle -->
             <div class="mb-4 position-relative">
-              <label for="newPassword" class="form-label fw-semibold">Actualizar Contraseña</label>
-              <div class="input-group">
-                <input type="password"
-                  class="form-control border border-secondary-subtle rounded-start-3 bg-white shadow-sm"
-                  id="newPassword" name="newPassword" minlength="8" maxlength="13" required
-                  oninput="updatePasswordCount(this, 'newPasswordCount')">
-                <span class="input-group-text bg-white border border-secondary-subtle rounded-end-3 shadow-sm"
-                  onclick="togglePasswordVisibility('newPassword', this)" style="cursor: pointer;">
-                  <i class="bi bi-eye-slash" id="toggleIcon"></i>
-                </span>
-              </div>
-              <small class="text-muted">Mínimo 8 y máximo 13 caracteres (<span
+              <label class="form-label fw-semibold" for="newPassword">Actualizar Contraseña</label>
+              <input type="password" class="form-control pe-5" id="newPassword" required
+                oninput="updatePasswordCount(this, 'newPasswordCount')">
+              <span class="toggle-password" onclick="togglePasswordVisibility('newPassword', this)">
+                <i class="fas fa-eye"></i>
+              </span>
+              <small class="text-muted d-block mt-1">Mínimo 8 y máximo 13 caracteres (<span
                   id="newPasswordCount">0</span>/13)</small>
             </div>
 
@@ -159,7 +161,6 @@
       </div>
     </div>
   </div>
-
 
   <!-- Modal Crear Usuario -->
   <div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel"
@@ -177,30 +178,38 @@
               <input type="text" class="form-control border border-secondary-subtle rounded-3 bg-white shadow-sm"
                 id="cedulaCreacion" name="cedulaCreacion" required>
             </div>
+
             <div class="mb-3">
               <label for="fechaNacimientoCreacion" class="form-label fw-semibold">Fecha de Nacimiento</label>
               <input type="date" class="form-control border border-secondary-subtle rounded-3 bg-white shadow-sm"
                 id="fechaNacimientoCreacion" name="fechaNacimientoCreacion" required>
             </div>
+
             <div class="mb-3">
               <label for="correoCreacion" class="form-label fw-semibold">Correo Electrónico</label>
               <input type="email" class="form-control border border-secondary-subtle rounded-3 bg-white shadow-sm"
                 id="correoCreacion" name="correoCreacion" required>
             </div>
-            <div class="mb-4">
-              <label for="passwordCreacion" class="form-label fw-semibold">Crear Contraseña</label>
-              <input type="password" class="form-control border border-secondary-subtle rounded-3 bg-white shadow-sm"
-                id="passwordCreacion" name="passwordCreacion" minlength="8" maxlength="13" required
+
+            <!-- Contraseña con toggle -->
+            <div class="mb-4 position-relative">
+              <label class="form-label fw-semibold" for="passwordCreacion">Crear Contraseña</label>
+              <input type="password" class="form-control pe-5" id="passwordCreacion" required
                 oninput="updatePasswordCount(this, 'passwordCreacionCount')">
-              <small class="text-muted">Mínimo 8 y máximo 13 caracteres (<span
+              <span class="toggle-password" onclick="togglePasswordVisibility('passwordCreacion', this)">
+                <i class="fas fa-eye"></i>
+              </span>
+              <small class="text-muted d-block mt-1">Mínimo 8 y máximo 13 caracteres (<span
                   id="passwordCreacionCount">0</span>/13)</small>
             </div>
+
             <button type="submit" class="btn btn-dark w-100 rounded-3">Crear Usuario</button>
           </form>
         </div>
       </div>
     </div>
   </div>
+
 
 
 

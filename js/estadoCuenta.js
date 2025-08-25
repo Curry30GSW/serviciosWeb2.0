@@ -209,7 +209,6 @@ document.getElementById('consultar').addEventListener('click', async () => {
             if (!isNaN(salo) && salo > 0) {
                 distribucionAportesHTML = `
                 <div class="col-12 mb-3">
-                    <p style="color: rgba(25, 135, 84, 0.9); font-size: 1.1rem; margin-bottom: 5px; font-weight: 500;">Distribución Aportes</p>
                     <div style="color: #000; font-weight: 525;">
                         El <strong>${fechaFormateada}</strong> se le distribuyó Aportes por <strong>$${formatNumber(salo)}</strong>
                     </div>

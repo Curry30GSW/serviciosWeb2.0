@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="../assets/img/fonditoelegant.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/f5.png">
+    <link rel="icon" type="image/png" href="../assets/img/f5.png">
     <title>
         COOPSERP | Certificado Renta
     </title>
@@ -135,10 +135,14 @@
                         <!-- Card Body -->
                         <div class="card-body px-2">
                             <form>
-                                <label>Seleccione la cuenta</label>
-                                <select id="slt-cuenta" class="form-control" required>
+                                <label class="mt-2">Cuentas seleccionadas</label>
+                                <div id="cuentas-list" class="form-control d-flex flex-wrap gap-2 p-2"
+                                    style="height:auto; min-height:45px;"></div>
+                                <div class="pt-2">
+                                    <button type="button" id="btnNuevaBusqueda" class="btn btn-secondary w-50">Consultar
+                                        otra cuenta</button>
+                                </div>
 
-                                </select>
 
                                 <label class="mt-2">Servicio a consultar </label>
                                 <input type="text" id="slt-certi" class="form-control" placeholder="Certificado Renta"
@@ -250,14 +254,11 @@
                     </form>
 
                     <!-- Resultado de búsqueda -->
-                    <div id="resultadoBusqueda" class="mt-4 d-none">
-                        <h6><strong>Asociado:</strong> <span id="nombreAsociado"></span></h6>
-                        <h6><strong>Nómina:</strong> <span id="nominaAsociado"></span></h6>
-
-                        <div class="mt-3">
-                            <label class="form-label">Seleccione una cuenta</label>
-                            <div id="listaCuentas" class="list-group"></div>
-                        </div>
+                    <div id="resultadoBusqueda" class="d-none mt-3">
+                        <p>Nombre: <span id="nombreAsociado"></span></p>
+                        <p>Nóminas: <span id="nominasAsociado"></span></p>
+                        <p>Cuentas: <span id="listaCuentas"></span></p>
+                        <button id="btnConfirmarBusqueda" class="btn btn-success mt-2">Confirmar</button>
                     </div>
                 </div>
             </div>
@@ -281,7 +282,6 @@
     <script src="../js/hora.js"></script>
     <script src="../js/verifyToken.js"></script>
     <script src="../js/sessionStorage.js"></script>
-    <script src="../js/obtenerCuentas.js"></script>
     <script src="../js/imprimirCertificado.js"></script>
     <script src="../js/certificadoRentaAdmin.js"></script>
     <script src="../js/cargos.js"></script>

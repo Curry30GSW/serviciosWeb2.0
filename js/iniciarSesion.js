@@ -1,4 +1,6 @@
-document.getElementById('btnLogin').addEventListener('click', async function () {
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
+    e.preventDefault(); // evita que recargue la página por defecto
+
     const cedula = document.getElementById('cedula').value;
     const password = document.getElementById('password').value;
     let fechaExpedicion = document.getElementById("fechaExpedicion").value;
@@ -22,7 +24,7 @@ document.getElementById('btnLogin').addEventListener('click', async function () 
                 'Authorization': 'Bearer ' + (sessionStorage.getItem('jwt') || '')
             },
             body: JSON.stringify({ cedula, password, fechaExpedicion }),
-            credentials: 'include' // Necesario para cookies de sesión
+            credentials: 'include'
         });
 
         if (!response.ok) {
@@ -316,3 +318,24 @@ document.getElementById("togglePassword").addEventListener("click", function () 
         icon.classList.add("fa-eye");
     }
 });
+
+
+
+function updatePasswordCount(input, spanId) {
+    document.getElementById(spanId).textContent = input.value.length;
+}
+
+function togglePasswordVisibility(inputId, iconElement) {
+    const input = document.getElementById(inputId);
+    const icon = iconElement.querySelector('i');
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = "password";
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
