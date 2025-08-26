@@ -183,6 +183,11 @@ function imprimirContenido(id) {
         // Restaurar el contenido original después de la impresión
         document.body.innerHTML = originalContent;
     }, 100);
+
+    window.onafterprint = () => {
+        location.reload();
+    };
+
 }
 
 

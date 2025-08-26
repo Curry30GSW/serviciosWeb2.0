@@ -173,6 +173,8 @@ document.getElementById("consultarCer").addEventListener("click", async function
     const libreria = "colib12";
     const token = sessionStorage.getItem('jwt');
     const cedula = sessionStorage.getItem("cedula");
+    const inicio = `1${anio}01`;
+    const fin = `1${anio}12`;
 
 
     if (!anio) {
@@ -196,7 +198,7 @@ document.getElementById("consultarCer").addEventListener("click", async function
     });
 
     try {
-        const url = `http://localhost:5000/api/certificado-renta?libreria=${libreria}${anio}&cedula=${cedula}&inicio=${anio}401&fin=${anio}412&year=20${anio}`;
+        const url = `http://localhost:5000/api/certificado-renta?libreria=${libreria}${anio}&cedula=${cedula}&inicio=${inicio}&fin=${fin}&year=20${anio}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -275,7 +277,7 @@ document.getElementById("consultarCer").addEventListener("click", async function
             totalCapital += item.capital || 0;
             totalCorriente += item.intereses?.corriente || 0;
             totalMora += item.intereses?.mora || 0;
-            totalVivienda += item.vivienda?.[0] || 0;
+            totalVivienda += Number(item.vivienda?.[0]?.CREDITO_VIVIENDA || 0);
             totalOtros += item.otros?.[0]?.OTROS || 0;
             totalRevalorizacion += item.reAportes?.[0]?.REVALORIZACION || 0;
             totalFondoSolidario += item.fondoSolidario || 0;
